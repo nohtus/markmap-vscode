@@ -13,11 +13,13 @@ import { deriveVSCodeOptions, type IMarkmapVSCodeOptions } from './options';
 declare let mm: Markmap;
 
 const vscode = acquireVsCodeApi();
+const previewState = (vscode.getState() as { followEditing?: boolean }) || {};
 let firstTime = true;
 let root: INode | undefined;
 let initialFoldState: FoldSnapshot | undefined;
 let style: HTMLStyleElement;
 let active: INode | undefined;
+let followEditing = previewState.followEditing ?? false;
 const activeNodeOptions: {
   placement?: 'center' | 'visible';
 } = {};
@@ -51,7 +53,8 @@ const handlers = {
     if (!result) return;
     const { node, needRerender } = result;
     if (needRerender) await mm.renderData();
-    highlightNode(node);
+    if (followEditing) await focusNode(node);
+    else await highlightNode(node);
   },
   setCSS(data: string) {
     if (!style) {
@@ -77,9 +80,13 @@ const handlers = {
   },
   async focusPath() {
     if (!root || !active) return;
-    collapseOutsidePath(root, active);
-    await mm.setHighlight(active);
-    await mm.centerNode(active, { bottom: 80 });
+    await focusNode(active);
+  },
+  async toggleFollowEditing(e?: Event) {
+    followEditing = !followEditing;
+    vscode.setState({ ...previewState, followEditing });
+    syncFollowButton(e?.currentTarget as HTMLElement | undefined);
+    if (followEditing && active) await focusNode(active);
   },
   async resetView() {
     if (!root || !initialFoldState) return;
@@ -125,6 +132,12 @@ toolbar.register({
   onClick: previewHandler('focusPath'),
 });
 toolbar.register({
+  id: 'followEditing',
+  title: 'Follow the Markdown cursor and focus its path',
+  content: createButton('Follow'),
+  onClick: (e) => handlers.toggleFollowEditing(e),
+});
+toolbar.register({
   id: 'resetView',
   title: 'Restore the initial expansion state',
   content: createButton('Reset'),
@@ -149,6 +162,7 @@ toolbar.setItems([
   'recurse',
   'toggleLevel',
   'focusPath',
+  'followEditing',
   'resetView',
   'editAsText',
   'export',
@@ -160,6 +174,7 @@ setTimeout(() => {
   initialize(mm);
   toolbar.attach(mm);
   document.body.append(toolbar.el);
+  syncFollowButton();
 });
 
 function initialize(mm: Markmap) {
@@ -206,6 +221,20 @@ function clickHandler(type: string) {
 
 function previewHandler(type: 'focusPath' | 'resetView') {
   return () => handlers[type]();
+}
+
+function syncFollowButton(button?: HTMLElement) {
+  const item =
+    button?.closest<HTMLElement>('.mm-toolbar-item') ||
+    Array.from(
+      toolbar.el.querySelectorAll<HTMLElement>('.mm-toolbar-item'),
+    ).find((el) => el.textContent === 'Follow');
+  item?.classList.toggle('active', followEditing);
+  if (item) {
+    item.title = followEditing
+      ? 'Stop following the Markdown cursor'
+      : 'Follow the Markdown cursor and focus its path';
+  }
 }
 
 function findHeading(id: string) {
@@ -266,4 +295,12 @@ async function highlightNode(node?: INode) {
   ](node, {
     bottom: 80,
   });
+}
+
+async function focusNode(node: INode) {
+  if (!root) return;
+  active = node;
+  collapseOutsidePath(root, node);
+  await mm.setHighlight(node);
+  await mm.centerNode(node, { bottom: 80 });
 }

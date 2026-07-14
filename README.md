@@ -36,6 +36,9 @@ Open a markdown file. Find the markmap icon on the editor title-bar and click it
   expanding, every child is folded first so grandchildren remain hidden.
 - **Focus** collapses every branch outside the node at the Markdown cursor,
   leaving only its ancestor path visible.
+- **Follow** toggles live path focus. While enabled, moving or typing in the
+  Markdown editor automatically collapses unrelated branches and centers the
+  node being edited. The highlighted button means Follow is active.
 - **Reset** restores the fold state created when the current Markdown was
   loaded.
 - **Export** asks whether to create SVG or HTML, then opens a save dialog with

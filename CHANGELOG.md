@@ -1,5 +1,10 @@
 # Change Log
 
+## 0.2.17
+
+- Add a Follow preview toggle that automatically focuses the path to the node
+  at the Markdown cursor while editing
+
 ## 0.2.16
 
 - Ask for SVG or HTML before exporting, with SVG recommended for Anki
