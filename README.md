@@ -32,8 +32,8 @@ Open a markdown file. Find the markmap icon on the editor title-bar and click it
 
 ## Preview controls
 
-- **1 Level** expands or collapses the active node's immediate children without
-  changing the saved state of deeper branches.
+- **1 Level** expands or collapses the active node's immediate children. When
+  expanding, every child is folded first so grandchildren remain hidden.
 - **Focus** collapses every branch outside the node at the Markdown cursor,
   leaving only its ancestor path visible.
 - **Reset** restores the fold state created when the current Markdown was

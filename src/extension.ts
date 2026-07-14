@@ -389,10 +389,9 @@ class MarkmapEditor implements CustomTextEditorProvider {
   toggleActiveNode(document: TextDocument, recursive = false) {
     const webviewPanel = this.webviewPanelMap.get(document);
     if (!webviewPanel) return;
-    webviewPanel.webview.postMessage({
-      type: 'toggleNode',
-      data: recursive,
-    });
+    webviewPanel.webview.postMessage(
+      recursive ? { type: 'toggleNode', data: true } : { type: 'toggleLevel' },
+    );
   }
 
   runPreviewAction(document: TextDocument, type: 'focusPath' | 'resetView') {

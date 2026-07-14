@@ -5,6 +5,7 @@ import {
   captureFoldState,
   collapseOutsidePath,
   restoreFoldState,
+  toggleOneLevel,
   type FoldSnapshot,
 } from './focus-path';
 import { deriveVSCodeOptions, type IMarkmapVSCodeOptions } from './options';
@@ -68,6 +69,12 @@ const handlers = {
     if (!active) return;
     mm.toggleNode(active, recursive);
   },
+  async toggleLevel() {
+    if (!active) return;
+    toggleOneLevel(active);
+    await mm.setHighlight(active);
+    await mm.ensureVisible(active, { bottom: 80 });
+  },
   async focusPath() {
     if (!root || !active) return;
     collapseOutsidePath(root, active);
@@ -109,7 +116,7 @@ toolbar.register({
   id: 'toggleLevel',
   title: 'Toggle one level below the active node',
   content: createButton('1 Level'),
-  onClick: () => handlers.toggleNode(false),
+  onClick: () => handlers.toggleLevel(),
 });
 toolbar.register({
   id: 'focusPath',

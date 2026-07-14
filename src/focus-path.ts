@@ -41,6 +41,21 @@ export function collapseOutsidePath(root: INode, target: INode): void {
   visit(root);
 }
 
+/**
+ * Toggle a node while guaranteeing that expansion reveals exactly one level.
+ * Grandchildren remain hidden because every expandable child is folded first.
+ */
+export function toggleOneLevel(node: INode): void {
+  if (node.payload?.fold) {
+    setFold(node, 0);
+    node.children?.forEach((child) => {
+      if (child.children?.length) setFold(child, 1);
+    });
+  } else if (node.children?.length) {
+    setFold(node, 1);
+  }
+}
+
 function walk(node: INode, visit: (node: INode) => void): void {
   visit(node);
   node.children?.forEach((child) => walk(child, visit));

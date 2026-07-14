@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.2.15
+
+- Ensure 1 Level expansion keeps all grandchildren collapsed
+
 ## 0.2.14
 
 - Add a 1 Level preview control for toggling the active node's immediate children
