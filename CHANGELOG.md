@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.2.18
+
+- Fix local preview images whose filenames contain spaces or Unicode characters
+
 ## 0.2.17
 
 - Add a Follow preview toggle that automatically focuses the path to the node

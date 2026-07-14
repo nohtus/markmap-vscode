@@ -68,6 +68,14 @@ async function writeFile(targetUri: Uri, text: string) {
   }
 }
 
+function decodeLocalPath(path: string) {
+  try {
+    return decodeURIComponent(path);
+  } catch {
+    return path;
+  }
+}
+
 class MarkmapEditor implements CustomTextEditorProvider {
   private webviewPanelMap = new Map<TextDocument, WebviewPanel>();
 
@@ -93,7 +101,12 @@ class MarkmapEditor implements CustomTextEditorProvider {
       ...builtInPlugins,
       localImage((relPath) =>
         webviewPanel.webview
-          .asWebviewUri(Utils.joinPath(Utils.dirname(document.uri), relPath))
+          .asWebviewUri(
+            Utils.joinPath(
+              Utils.dirname(document.uri),
+              decodeLocalPath(relPath),
+            ),
+          )
           .toString(),
       ),
     ]);

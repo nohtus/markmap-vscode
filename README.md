@@ -44,6 +44,13 @@ Open a markdown file. Find the markmap icon on the editor title-bar and click it
 - **Export** asks whether to create SVG or HTML, then opens a save dialog with
   the correct extension. SVG is the recommended choice for Anki media.
 
+Local Markdown images are supported in the preview, including filenames with
+spaces or Unicode characters:
+
+```markdown
+- ![Structure](<./Screenshot with spaces.png>)
+```
+
 The same one-level action is available from the Command Palette as **Markmap:
 Toggle the active node**. Focus and Reset are available as **Markmap: Focus the
 active path** and **Markmap: Reset the mind map view**.
