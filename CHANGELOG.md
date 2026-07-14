@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.2.14
+
+- Add a 1 Level preview control for toggling the active node's immediate children
+
 ## 0.2.13
 
 - Add Focus and Reset controls to the preview toolbar

@@ -106,6 +106,12 @@ vscode.postMessage({ type: 'refresh' });
 
 const toolbar = new Toolbar();
 toolbar.register({
+  id: 'toggleLevel',
+  title: 'Toggle one level below the active node',
+  content: createButton('1 Level'),
+  onClick: () => handlers.toggleNode(false),
+});
+toolbar.register({
   id: 'focusPath',
   title: 'Collapse all except the active path',
   content: createButton('Focus'),
@@ -134,6 +140,7 @@ toolbar.setItems([
   'zoomOut',
   'fit',
   'recurse',
+  'toggleLevel',
   'focusPath',
   'resetView',
   'editAsText',

@@ -32,13 +32,16 @@ Open a markdown file. Find the markmap icon on the editor title-bar and click it
 
 ## Preview controls
 
+- **1 Level** expands or collapses the active node's immediate children without
+  changing the saved state of deeper branches.
 - **Focus** collapses every branch outside the node at the Markdown cursor,
   leaving only its ancestor path visible.
 - **Reset** restores the fold state created when the current Markdown was
   loaded.
 
-Both actions are also available from the Command Palette as **Markmap: Focus
-the active path** and **Markmap: Reset the mind map view**.
+The same one-level action is available from the Command Palette as **Markmap:
+Toggle the active node**. Focus and Reset are available as **Markmap: Focus the
+active path** and **Markmap: Reset the mind map view**.
 
 ## Configuration
 
