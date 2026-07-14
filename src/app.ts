@@ -1,6 +1,12 @@
 import { IDeferred, defer, wrapFunction, type INode } from 'markmap-common';
 import { Toolbar } from 'markmap-toolbar';
 import { defaultOptions, type Markmap } from 'markmap-view';
+import {
+  captureFoldState,
+  collapseOutsidePath,
+  restoreFoldState,
+  type FoldSnapshot,
+} from './focus-path';
 import { deriveVSCodeOptions, type IMarkmapVSCodeOptions } from './options';
 
 declare let mm: Markmap;
@@ -8,13 +14,9 @@ declare let mm: Markmap;
 const vscode = acquireVsCodeApi();
 let firstTime = true;
 let root: INode | undefined;
+let initialFoldState: FoldSnapshot | undefined;
 let style: HTMLStyleElement;
-let active:
-  | {
-      node: INode;
-      el: Element;
-    }
-  | undefined;
+let active: INode | undefined;
 const activeNodeOptions: {
   placement?: 'center' | 'visible';
 } = {};
@@ -34,6 +36,7 @@ const handlers = {
       ...defaultOptions,
       ...deriveVSCodeOptions(data.jsonOptions),
     });
+    initialFoldState = root && captureFoldState(root);
     activeNodeOptions.placement = data.jsonOptions?.activeNode?.placement;
     if (firstTime) {
       await mm.fit();
@@ -63,7 +66,20 @@ const handlers = {
   },
   toggleNode(recursive: boolean) {
     if (!active) return;
-    mm.toggleNode(active.node, recursive);
+    mm.toggleNode(active, recursive);
+  },
+  async focusPath() {
+    if (!root || !active) return;
+    collapseOutsidePath(root, active);
+    await mm.setHighlight(active);
+    await mm.centerNode(active, { bottom: 80 });
+  },
+  async resetView() {
+    if (!root || !initialFoldState) return;
+    restoreFoldState(root, initialFoldState);
+    if (active) await mm.setHighlight(active);
+    else await mm.renderData();
+    await mm.fit();
   },
 };
 window.addEventListener('message', (e) => {
@@ -90,6 +106,18 @@ vscode.postMessage({ type: 'refresh' });
 
 const toolbar = new Toolbar();
 toolbar.register({
+  id: 'focusPath',
+  title: 'Collapse all except the active path',
+  content: createButton('Focus'),
+  onClick: previewHandler('focusPath'),
+});
+toolbar.register({
+  id: 'resetView',
+  title: 'Restore the initial expansion state',
+  content: createButton('Reset'),
+  onClick: previewHandler('resetView'),
+});
+toolbar.register({
   id: 'editAsText',
   title: 'Edit as text',
   content: createButton('Edit'),
@@ -106,6 +134,8 @@ toolbar.setItems([
   'zoomOut',
   'fit',
   'recurse',
+  'focusPath',
+  'resetView',
   'editAsText',
   'export',
 ]);
@@ -160,6 +190,10 @@ function clickHandler(type: string) {
   };
 }
 
+function previewHandler(type: 'focusPath' | 'resetView') {
+  return () => handlers[type]();
+}
+
 function findHeading(id: string) {
   function dfs(node: INode) {
     if (!/^h\d$/.test(node.payload.tag as string)) return false;
@@ -210,6 +244,7 @@ function findActiveNode({
 }
 
 async function highlightNode(node?: INode) {
+  active = node;
   await mm.setHighlight(node);
   if (!node) return;
   await mm[

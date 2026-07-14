@@ -51,7 +51,7 @@ function deriveExportOptions(jsonOptions: IMarkmapVSCodeOptions) {
   if (jsonOptions?.colorByDepth && jsonOptions.color?.length) {
     const colors = jsonOptions.color;
     options.color = (node: { state: { depth: number } }) =>
-      colors[node.state.depth % colors.length];
+      colors[(node.state.depth - 1 + colors.length) % colors.length];
   }
   return options;
 }
@@ -394,6 +394,12 @@ class MarkmapEditor implements CustomTextEditorProvider {
       data: recursive,
     });
   }
+
+  runPreviewAction(document: TextDocument, type: 'focusPath' | 'resetView') {
+    const webviewPanel = this.webviewPanelMap.get(document);
+    if (!webviewPanel) return;
+    webviewPanel.webview.postMessage({ type });
+  }
 }
 
 export function activate(context: ExtensionContext) {
@@ -415,6 +421,14 @@ export function activate(context: ExtensionContext) {
     commands.registerCommand(`${PREFIX}.toggle-recursively`, () => {
       const document = vscodeWindow.activeTextEditor?.document;
       if (document) markmapEditor.toggleActiveNode(document, true);
+    }),
+    commands.registerCommand(`${PREFIX}.focus-path`, () => {
+      const document = vscodeWindow.activeTextEditor?.document;
+      if (document) markmapEditor.runPreviewAction(document, 'focusPath');
+    }),
+    commands.registerCommand(`${PREFIX}.reset-view`, () => {
+      const document = vscodeWindow.activeTextEditor?.document;
+      if (document) markmapEditor.runPreviewAction(document, 'resetView');
     }),
   );
   context.subscriptions.push(

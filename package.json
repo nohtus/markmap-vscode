@@ -1,6 +1,6 @@
 {
   "name": "markmap-vscode",
-  "version": "0.2.12",
+  "version": "0.2.13",
   "description": "Visualize your markdown in VSCode",
   "author": "Gerald <gera2ld@live.com>",
   "license": "MIT",
@@ -39,6 +39,16 @@
         "command": "markmap-vscode.toggle-recursively",
         "category": "Markmap",
         "title": "Toggle the active node recursively"
+      },
+      {
+        "command": "markmap-vscode.focus-path",
+        "category": "Markmap",
+        "title": "Focus the active path"
+      },
+      {
+        "command": "markmap-vscode.reset-view",
+        "category": "Markmap",
+        "title": "Reset the mind map view"
       }
     ],
     "customEditors": [
@@ -66,6 +76,14 @@
         {
           "when": "editorLangId == markdown || editorLangId == mdx",
           "command": "markmap-vscode.toggle-recursively"
+        },
+        {
+          "when": "editorLangId == markdown || editorLangId == mdx",
+          "command": "markmap-vscode.focus-path"
+        },
+        {
+          "when": "editorLangId == markdown || editorLangId == mdx",
+          "command": "markmap-vscode.reset-view"
         }
       ],
       "explorer/context": [

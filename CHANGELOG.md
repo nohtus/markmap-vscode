@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.2.13
+
+- Add Focus and Reset controls to the preview toolbar
+- Add commands to focus the active path and reset the mind map view
+- Align depth colors with the first palette color at the root
+
 ## 0.2.12
 
 - Add `colorByDepth` for level-uniform colors in preview and exported HTML

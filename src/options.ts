@@ -16,7 +16,8 @@ export function deriveVSCodeOptions(
   const options = deriveOptions(jsonOptions);
   if (jsonOptions?.colorByDepth && jsonOptions.color?.length) {
     const colors = jsonOptions.color;
-    options.color = (node: INode) => colors[node.state.depth % colors.length];
+    options.color = (node: INode) =>
+      colors[(node.state.depth - 1 + colors.length) % colors.length];
   }
   return options;
 }

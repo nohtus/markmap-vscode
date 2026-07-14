@@ -10,6 +10,7 @@ This extension integrates [markmap](https://markmap.js.org/) into VSCode.
 - Preview markdown files as markmap
 - Edit markdown files in a text editor and the markmap will update on the fly
 - Works offline
+- Focus the active Markdown path from the preview toolbar
 
 <img width="1014" alt="markmap" src="https://user-images.githubusercontent.com/3139113/97068999-5f9e8480-15ff-11eb-8222-43d26cecade5.png">
 
@@ -28,6 +29,16 @@ Right click on a markdown file, then choose `Open as markmap`.
 Open a markdown file. Find the markmap icon on the editor title-bar and click it.
 
 ![title button](https://user-images.githubusercontent.com/3139113/110966366-25f0cf00-8390-11eb-9a16-3c4d66712f47.png)
+
+## Preview controls
+
+- **Focus** collapses every branch outside the node at the Markdown cursor,
+  leaving only its ancestor path visible.
+- **Reset** restores the fold state created when the current Markdown was
+  loaded.
+
+Both actions are also available from the Command Palette as **Markmap: Focus
+the active path** and **Markmap: Reset the mind map view**.
 
 ## Configuration
 
