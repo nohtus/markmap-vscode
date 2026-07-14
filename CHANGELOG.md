@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.2.16
+
+- Ask for SVG or HTML before exporting, with SVG recommended for Anki
+
 ## 0.2.15
 
 - Ensure 1 Level expansion keeps all grandchildren collapsed

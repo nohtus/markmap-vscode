@@ -311,17 +311,47 @@ class MarkmapEditor implements CustomTextEditorProvider {
         });
       },
       async export() {
-        const targetUri = await vscodeWindow.showSaveDialog({
-          saveLabel: 'Export',
+        const format = await vscodeWindow.showQuickPick(
+          [
+            {
+              label: 'SVG',
+              description: 'Recommended for Anki and image fields',
+              extension: 'svg',
+            },
+            {
+              label: 'HTML',
+              description: 'Interactive standalone mind map',
+              extension: 'html',
+            },
+          ],
+          {
+            placeHolder: 'Choose a Markmap export format',
+          },
+        );
+        if (!format) return;
+        const baseName = Utils.basename(document.uri).replace(
+          /\.(?:md|mdx)$/i,
+          '',
+        );
+        const chosenUri = await vscodeWindow.showSaveDialog({
+          saveLabel: `Export ${format.label}`,
+          defaultUri: Utils.joinPath(
+            Utils.dirname(document.uri),
+            `${baseName}.${format.extension}`,
+          ),
           filters: {
-            HTML: ['html'],
-            SVG: ['svg'],
+            [format.label]: [format.extension],
           },
         });
-        if (!targetUri) return;
-        if (targetUri.path.endsWith('.html')) {
+        if (!chosenUri) return;
+        const targetUri = chosenUri.path
+          .toLowerCase()
+          .endsWith(`.${format.extension}`)
+          ? chosenUri
+          : chosenUri.with({ path: `${chosenUri.path}.${format.extension}` });
+        if (format.extension === 'html') {
           await exportAsHtml(targetUri);
-        } else if (targetUri.path.endsWith('.svg')) {
+        } else {
           webviewPanel.webview.postMessage({
             type: 'downloadSvg',
             data: targetUri.toString(),

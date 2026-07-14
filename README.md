@@ -38,6 +38,8 @@ Open a markdown file. Find the markmap icon on the editor title-bar and click it
   leaving only its ancestor path visible.
 - **Reset** restores the fold state created when the current Markdown was
   loaded.
+- **Export** asks whether to create SVG or HTML, then opens a save dialog with
+  the correct extension. SVG is the recommended choice for Anki media.
 
 The same one-level action is available from the Command Palette as **Markmap:
 Toggle the active node**. Focus and Reset are available as **Markmap: Focus the
