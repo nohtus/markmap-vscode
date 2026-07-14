@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.2.12
+
+- Add `colorByDepth` for level-uniform colors in preview and exported HTML
+
 ## 0.1.1
 
 - Use <kbd>Cmd</kbd>+click to toggle nodes recursively on macOS

@@ -1,10 +1,10 @@
 {
   "name": "markmap-vscode",
-  "version": "0.2.11",
+  "version": "0.2.12",
   "description": "Visualize your markdown in VSCode",
   "author": "Gerald <gera2ld@live.com>",
   "license": "MIT",
-  "displayName": "Markmap",
+  "displayName": "Markmap (Depth Colors)",
   "publisher": "gera2ld",
   "icon": "assets/favicon.png",
   "engines": {
@@ -108,7 +108,7 @@
   },
   "scripts": {
     "prepare": "husky",
-    "vscode:prepublish": "pnpm build",
+    "vscode:prepublish": "node node_modules/rollup/dist/bin/rollup -c && node dist/postbuild.js",
     "clean": "del-cli dist",
     "build:js": "rollup -c && node dist/postbuild.js",
     "build": "pnpm lint:fix && pnpm clean && pnpm build:js",
@@ -117,7 +117,7 @@
     "dev:browser": "vscode-test-web --extensionDevelopmentPath=. .",
     "dev:pack": "npx @vscode/vsce pack"
   },
-  "repository": "https://github.com/gera2ld/markmap-vscode",
+  "repository": "https://github.com/nohtus/markmap-vscode",
   "main": "dist/extension.js",
   "browser": "dist/extension.js",
   "files": [

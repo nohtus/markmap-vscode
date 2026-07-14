@@ -1,11 +1,7 @@
 import { IDeferred, defer, wrapFunction, type INode } from 'markmap-common';
 import { Toolbar } from 'markmap-toolbar';
-import {
-  defaultOptions,
-  deriveOptions,
-  type IMarkmapJSONOptions,
-  type Markmap,
-} from 'markmap-view';
+import { defaultOptions, type Markmap } from 'markmap-view';
+import { deriveVSCodeOptions, type IMarkmapVSCodeOptions } from './options';
 
 declare let mm: Markmap;
 
@@ -27,7 +23,7 @@ let loading: IDeferred<void> | undefined;
 const handlers = {
   async setData(data: {
     root?: INode;
-    jsonOptions?: IMarkmapJSONOptions & {
+    jsonOptions?: IMarkmapVSCodeOptions & {
       activeNode?: {
         placement?: 'center' | 'visible';
       };
@@ -36,7 +32,7 @@ const handlers = {
     loading = defer();
     await mm.setData((root = data.root), {
       ...defaultOptions,
-      ...deriveOptions(data.jsonOptions),
+      ...deriveVSCodeOptions(data.jsonOptions),
     });
     activeNodeOptions.placement = data.jsonOptions?.activeNode?.placement;
     if (firstTime) {

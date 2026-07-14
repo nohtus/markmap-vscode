@@ -38,3 +38,21 @@ Extra CSS to customize the style of markmap.
 ### Default Options
 
 Default options for Markmap, see <https://markmap.js.org/docs/json-options#markmap-for-vscode> for more details.
+
+### Lock colors by level
+
+This fork adds `colorByDepth`. When enabled, every node at the same tree depth
+uses the same entry from the normal `color` palette in both the live preview
+and exported HTML.
+
+```yaml
+---
+markmap:
+  colorByDepth: true
+  color:
+    - '#1f77b4'
+    - '#ff7f0e'
+    - '#2ca02c'
+  spacingVertical: 32
+---
+```

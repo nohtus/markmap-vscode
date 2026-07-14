@@ -7,7 +7,6 @@ import {
 } from 'markmap-common';
 import { Transformer, builtInPlugins } from 'markmap-lib';
 import { baseJsPaths, fillTemplate } from 'markmap-render';
-import { type IMarkmapJSONOptions } from 'markmap-view';
 import {
   CustomTextEditorProvider,
   ExtensionContext,
@@ -24,6 +23,7 @@ import {
 } from 'vscode';
 import { Utils } from 'vscode-uri';
 import localImage from './plugins/local-image';
+import { type IMarkmapVSCodeOptions } from './options';
 import {
   ASSETS_PREFIX,
   appAssets,
@@ -40,6 +40,20 @@ function renderToolbar() {
   const { el } = markmap.Toolbar.create(mm);
   el.setAttribute('style', 'position:absolute;bottom:20px;right:20px');
   document.body.append(el);
+}
+
+/**
+ * This function is serialized into exported HTML by `fillTemplate`, so it must
+ * remain self-contained instead of importing the preview helper.
+ */
+function deriveExportOptions(jsonOptions: IMarkmapVSCodeOptions) {
+  const options = (window as any).markmap.deriveOptions(jsonOptions);
+  if (jsonOptions?.colorByDepth && jsonOptions.color?.length) {
+    const colors = jsonOptions.color;
+    options.color = (node: { state: { depth: number } }) =>
+      colors[node.state.depth % colors.length];
+  }
+  return options;
 }
 
 async function writeFile(targetUri: Uri, text: string) {
@@ -142,7 +156,7 @@ class MarkmapEditor implements CustomTextEditorProvider {
         });
       }
     };
-    let globalOptions: IMarkmapJSONOptions & {
+    let globalOptions: IMarkmapVSCodeOptions & {
       autoExpand?: boolean;
       htmlParser?: unknown;
     };
@@ -278,6 +292,7 @@ class MarkmapEditor implements CustomTextEditorProvider {
       }
       const html = fillTemplate(root, assets, {
         baseJs: [],
+        getOptions: deriveExportOptions,
         jsonOptions,
         urlBuilder: transformerExport.urlBuilder,
       });
